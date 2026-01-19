@@ -24,6 +24,20 @@ When setting up OAuth2 from client side, you have two options:
 
 If you chose the second option, there are open-source libraries for handling OAuth2 on Mobile using AppAuth ([iOS](https://github.com/openid/AppAuth-iOS) and [Android](https://github.com/openid/AppAuth-Android)), as well as for React Native using [react-native-app-auth](https://github.com/FormidableLabs/react-native-app-auth).
 
+### iOS Webview Configuration
+
+If you are calling the OAuth flow from an iOS webview integration, you need to add the following to your `Info.plist` file in Xcode:
+
+```xml
+<key>LSApplicationQueriesSchemes</key>
+<array>
+  <string>zebedee.oauth2</string>
+  <string>zbd</string>
+</array>
+```
+
+This allows your iOS app to query and open the ZBD app URL schemes required for the OAuth flow. Without this configuration, the OAuth redirect may not work properly on iOS devices.
+
 ## Server Side
 
 ### Node.js
@@ -68,7 +82,7 @@ const createZBDOauth = () => {
   const oauth2 = new OAuth2(
     ZBD_CONSUMER_KEY, // CLient ID
     ZBD_CONSUMER_SECRET, // Client Secret
-    ZEBEDEE_API_URL, // ZBD API URL: https://api.zebedee.io/v0/
+    ZEBEDEE_API_URL, // ZBD API URL: https://api.zbdpay.com/v0/
     authorizeUrl, // Authorization URL: oauth2/authorize/
     tokenPath, // Token Path: oauth2/token
     null,
@@ -184,7 +198,7 @@ Those values are send as payload on this next request:
     const response = await axios({
         method: 'POST',
         data: payload,
-        url: `https://api.zebedee.io/v0/oauth2/token`,
+        url: `https://api.zbdpay.com/v0/oauth2/token`,
         headers: {
         'Content-Type': 'application/json;charset=UTF-8',
         },
@@ -200,7 +214,7 @@ Those values are send as payload on this next request:
     export const getUserData = async (accessToken: string) => {
     const response = await axios({
         method: 'GET',
-        url: `https://api.zebedee.io/v0/oauth2/user`,
+        url: `https://api.zbdpay.com/v0/oauth2/user`,
         headers: {
         'Content-Type': 'application/json;charset=UTF-8',
         Authorization: `Bearer ${accessToken}`,
